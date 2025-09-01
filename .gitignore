@@ -1,0 +1,16 @@
+# Ignore actual config file with credentials
+config.json
+
+# Ignore record exports and zone files
+*.txt
+*.json
+
+# Optional: ignore audit logs and dry-run outputs
+audit-trail-*.txt
+dry-run-changes-*.json
+
+# Optional: ignore zone-pdns.txt files
+*zone-pdns.txt
+
+# Optional: ignore any zone-trimmed.txt files
+*zone-trimmed.txt
