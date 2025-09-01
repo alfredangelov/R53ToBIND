@@ -1,5 +1,5 @@
 # Load configuration from JSON
-$config = Get-Content "config.json" | ConvertFrom-Json
+$config = Get-Content "shared\config.json" | ConvertFrom-Json
 
 # Load AWS credentials from secrets
 $accessKey    = Get-Secret -Name $config.AWSAccessKey -AsPlainText

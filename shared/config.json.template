@@ -3,9 +3,9 @@
   "AWSAccessKey": "AWSAccessKey",
   "AWSSecretKey": "AWSSecretKey",
   "AWSSessionToken": "AWSSessionToken",
-  "RecordDumpPath": "domain-records.json",
-  "InputZonePath": "domain.zone-trimmed.txt",
-  "OutputBindPath": "domain.zone.txt",
+  "RecordDumpPath": "export/domain-records.json",
+  "InputZonePath": "export/domain.zone-trimmed.txt",
+  "OutputBindPath": "export/domain.zone.txt",
   "Origin": "domain.com.",
   "TTL": 900,
   "DryRun": true

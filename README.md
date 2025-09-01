@@ -14,6 +14,23 @@ It uses PowerShell, AWS.Tools modules, and the Microsoft.PowerShell.SecretManage
 
 ---
 
+## Directory Structure
+
+The toolkit uses the following directory structure:
+
+- **`shared/`** - Configuration files and templates
+  - `config.json` - Your environment-specific configuration
+  - `config.json.template` - Template for creating new configs
+- **`export/`** - Output artifacts and zone files (ignored by git)
+  - Generated zone files, record dumps, and manual edits
+- **`log/`** - Audit trails and debug files (ignored by git)
+  - Audit trails from import operations
+  - Dry-run change files
+- **`attic/`** - Development artifacts (ignored by git)
+  - Historical or development-only files
+
+---
+
 ## Setup
 
 ### 1. Install Required Modules
@@ -40,7 +57,7 @@ Run the config script and answer the prompts:
 .\create-config.ps1
 ```
 
-This will generate a `config.json` file with your settings.
+This will generate a `shared\config.json` file with your settings.
 
 ### 4. Validate AWS Credentials and Hosted Zone Access
 
@@ -62,20 +79,20 @@ This will generate a `config.json` file with your settings.
 .\awsToBIND.ps1
 ```
 
-- This script exports your Route53 zone to a BIND-compatible zone file (e.g. `domain.com.zone.txt`).
+- This script exports your Route53 zone to a BIND-compatible zone file (saved to the `export` directory, e.g. `export\domain.com.zone.txt`).
 
 ### 2. **Manual Audit Step (Required!)**
 
-After running `awsToBIND.ps1`, **manually review and split the output zone file**:
+After running `awsToBIND.ps1`, **manually review and split the output zone file** (located in the `export` directory):
 
-- Open the generated `domain.com.zone.txt`.
+- Open the generated `export\domain.com.zone.txt`.
 - Create two files:
-  - `domain.com.zone-pdns.txt` — for records you want to keep for PowerDNS or reference.
-  - `domain.com.zone-trimmed.txt` — for records you want to re-import to AWS (remove unwanted or incompatible records).
+  - `export\domain.com.zone-pdns.txt` — for records you want to keep for PowerDNS or reference.
+  - `export\domain.com.zone-trimmed.txt` — for records you want to re-import to AWS (remove unwanted or incompatible records).
 
 > **Note:**  
-> The `domain.com.zone-trimmed.txt` file will be used as input for the import step.  
-> The filename should match what you set as `InputZonePath` in your `config.json`.
+> The `export\domain.com.zone-trimmed.txt` file will be used as input for the import step.  
+> The filename should match what you set as `InputZonePath` in your `shared\config.json`.
 
 ### 3. Import BIND Zone Back to Route53
 
@@ -83,9 +100,10 @@ After running `awsToBIND.ps1`, **manually review and split the output zone file*
 .\BINDToAWS.ps1
 ```
 
-- This script reads your trimmed BIND zone file (`domain.com.zone-trimmed.txt`), compares it with current AWS records, and prepares a change batch.
-- If `DryRun` is enabled in your config, no changes will be made and a dry-run file will be created.
+- This script reads your trimmed BIND zone file (from the `export` directory, e.g. `export\domain.com.zone-trimmed.txt`), compares it with current AWS records, and prepares a change batch.
+- If `DryRun` is enabled in your config, no changes will be made and a dry-run file will be created in the `log` directory.
 - If `DryRun` is `false`, changes will be submitted to Route53.
+- An audit trail is always created in the `log` directory.
 
 ---
 
@@ -106,7 +124,7 @@ Set-Secret -Name "AWSSessionToken"  -Secret "..."
 # 4. Export Route53 zone to BIND
 .\awsToBIND.ps1
 
-# 5. MANUAL: Review and split output zone file into domain.com.zone-pdns.txt and domain.com.zone-trimmed.txt
+# 5. MANUAL: Review and split output zone file in export/ directory into domain.com.zone-pdns.txt and domain.com.zone-trimmed.txt
 
 # 6. Import trimmed BIND zone back to Route53
 .\BINDToAWS.ps1
@@ -119,9 +137,9 @@ Set-Secret -Name "AWSSessionToken"  -Secret "..."
 - If you see errors about invalid tokens or missing zones:
   - Ensure your session token is current and matches your access/secret key.
   - Check IAM permissions for `route53:GetHostedZone`.
-  - Confirm your `config.json` secret names match those in your vault.
+  - Confirm your `shared\config.json` secret names match those in your vault.
 - If you have multiple AWS PowerShell modules, uninstall all but the AWS.Tools.* modules.
-- Make sure your `InputZonePath` in `config.json` points to your manually trimmed zone file.
+- Make sure your `InputZonePath` in `shared\config.json` points to your manually trimmed zone file in the `export` directory.
 
 ---
 

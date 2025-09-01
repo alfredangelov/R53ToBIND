@@ -1,6 +1,6 @@
 # Load configuration
-Write-Host "🔍 Loading configuration from config.json..."
-$config = Get-Content "config.json" | ConvertFrom-Json
+Write-Host "🔍 Loading configuration from shared\config.json..."
+$config = Get-Content "shared\config.json" | ConvertFrom-Json
 
 # Display essential config values
 Write-Host "ℹ️  HostedZoneId     → $($config.HostedZoneId)"

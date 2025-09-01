@@ -1,16 +1,16 @@
 # Load template
-$configPath   = "config.json"
+$configPath   = "shared\config.json"
 
-Write-Host "🛠️ Creating config.json from template..."
+Write-Host "🛠️ Creating shared\config.json from template..."
 
 # Prompt user for each field
 $hostedZoneId   = Read-Host "Enter your HostedZoneId"
 $accessKeyName  = Read-Host "Enter name of your AWSAccessKey secret"
 $secretKeyName  = Read-Host "Enter name of your AWSSecretKey secret"
 $sessionToken   = Read-Host "Enter name of your AWSSessionToken secret"
-$dumpFile       = Read-Host "Enter desired RecordDumpPath (e.g. domain.com-records.json)"
-$inputZonePath  = Read-Host "Enter InputZonePath (e.g. domain.com.zone-trimmed.txt)"
-$outputBindPath = Read-Host "Enter OutputBindPath (e.g. domain.com.zone.txt)"
+$dumpFile       = Read-Host "Enter desired RecordDumpPath (e.g. export/domain.com-records.json)"
+$inputZonePath  = Read-Host "Enter InputZonePath (e.g. export/domain.com.zone-trimmed.txt)"
+$outputBindPath = Read-Host "Enter OutputBindPath (e.g. export/domain.com.zone.txt)"
 $origin         = Read-Host "Enter \$ORIGIN value (e.g. domain.com.)"
 $ttl            = Read-Host "Enter default TTL (e.g. 900)"
 $dryRun         = Read-Host "Enable dry-run mode? (true/false)"
@@ -29,7 +29,7 @@ $configObject = @{
     DryRun           = [bool]::Parse($dryRun)
 }
 
-# Save to config.json
+# Save to shared\config.json
 $configObject | ConvertTo-Json -Depth 3 | Set-Content $configPath
 
 Write-Host "✅ Config saved to $configPath"

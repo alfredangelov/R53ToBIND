@@ -1,5 +1,5 @@
 # LOAD CONFIGURATION
-$config = Get-Content "config.json" | ConvertFrom-Json
+$config = Get-Content "shared\config.json" | ConvertFrom-Json
 
 $zoneFilePath = $config.InputZonePath
 $hostedZoneId = $config.HostedZoneId
@@ -120,15 +120,15 @@ foreach ($aws in $awsRecords) {
 
 # OUTPUT AUDIT TRAIL
 $timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm"
-$logFile = "audit-trail-$timestamp.txt"
+$logFile = "log\audit-trail-$timestamp.txt"
 $auditLog | Set-Content $logFile
 Write-Host "📝 Audit trail saved to $logFile"
 
 # DRY RUN OR EXECUTE
 if ($dryRun) {
     Write-Host "🚫 Dry run mode enabled — no changes submitted to AWS"
-    $changeBatch | ConvertTo-Json -Depth 5 | Out-File "dry-run-changes-$timestamp.json"
-    Write-Host "📦 Change batch saved to dry-run-changes-$timestamp.json"
+    $changeBatch | ConvertTo-Json -Depth 5 | Out-File "log\dry-run-changes-$timestamp.json"
+    Write-Host "📦 Change batch saved to log\dry-run-changes-$timestamp.json"
 } else {
     Edit-R53ResourceRecordSet -HostedZoneId $hostedZoneId `
         -AccessKey $accessKey `

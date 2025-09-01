@@ -14,3 +14,33 @@ dry-run-changes-*.json
 
 # Optional: ignore any zone-trimmed.txt files
 *zone-trimmed.txt
+
+
+# Public hygiene: keep sensitive/local artifacts out of the repo
+
+# Active configuration (contains environment-specific values)
+shared/config.json
+shared/config.*.json
+
+# Attic (archived development artifacts)
+attic/*
+
+# Data export files
+export/*
+
+# Logs and debug files
+log/*
+
+# Ignore cruft
+Thumbs.db
+.DS_Store
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+*.ps1xml
+profile.ps1
+*.bak
+*.backup
+*~
